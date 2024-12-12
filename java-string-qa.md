@@ -190,7 +190,7 @@ s1 = s1.concat(" Programming");
 System.out.println(s1);  // Output: "Java Programming"
 // The original string "Java" is not changed, a new String object is created.
 
-- ```
+```
 
 </details>
 
