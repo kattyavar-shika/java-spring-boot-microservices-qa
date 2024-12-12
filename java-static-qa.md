@@ -358,3 +358,58 @@ public class Test {
 - Non-static methods can still be accessed concurrently by other threads, even when a static synchronized method is being executed by a thread.
 
 </details>
+
+## What is a static import in Java, and how does it work?
+<details>
+<summary> Answer</summary>
+
+- In Java, static import allows you to access static members (fields and methods) of a class without needing to use the class name to qualify them.
+- This feature helps in making the code more concise and readable, especially when you are dealing with frequently used static members like constants or utility methods.
+
+- **Syntax**
+- To import a static member, you use the import static keyword followed by the class name and the static member.
+
+```java
+import static packageName.ClassName.memberName;
+
+// Alternatively, you can import all static members of a class:
+import static packageName.ClassName.*;
+
+```
+
+- Example
+```java
+import static java.lang.Math.PI;
+import static java.lang.Math.pow;
+
+public class StaticImportExample {
+    public static void main(String[] args) {
+        // Using static imported constants and methods
+        System.out.println("Value of PI: " + PI);  // No need to write Math.PI
+        System.out.println("2^3: " + pow(2, 3));  // No need to write Math.pow(2, 3)
+    }
+}
+
+```
+- Explanation
+- - In the above example, we imported the static members PI and pow() from the Math class.
+
+- **Key Points:**
+- Static import can only be used for static fields and static methods.
+- It improves readability when you have commonly used static methods or constants.
+- Overusing static import can lead to name conflicts, especially when you import static members from multiple classes that have methods or fields with the same name. It can also make code harder to read if not used carefully.
+- **When to Use Static Import?**
+- It's best used when you are dealing with constants (e.g., Math.PI, Integer.MAX_VALUE) or utility methods (e.g., Collections.sort(), Math.pow()) where adding the class name every time would be cumbersome.
+- **Potential Pitfalls:**
+- Name Conflicts: If two classes have the same static method or variable names, static import can lead to ambiguity.
+
+```java
+import static java.util.Collections.*;  // static import for all methods in Collections
+import static java.util.Arrays.*;        // static import for all methods in Arrays
+
+// If both Arrays and Collections have methods with the same name, like `sort()`, there can be a conflict.
+
+```
+
+
+</details>
