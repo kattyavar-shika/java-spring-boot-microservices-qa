@@ -202,16 +202,3 @@ System.out.println(s1);  // Output: "Java Programming"
 - **StringBuffer:** Slower due to synchronization, used in multi-threaded environments.
 
 </details>
-
-
-
-
-## ref
-
-## 
-<details>
-<summary> Answer</summary>
-
-- 
-
-</details>
