@@ -1,22 +1,9 @@
 # java-spring-boot-microservices-qa
+ 
 
+# Q&A Master
 
-
-## ref
-
-## 
-<details>
-<summary> Answer</summary>
-
--
-
-</details>
-
-
-# Java Q&A Master
-
-Welcome to the **Java Q&A** resource! This document contains separate sections for **String** and **Static** concepts. Click below to navigate to your topic of interest.
 
 ## Table of Contents
-- [String Q&A](#string-qa)
-- [Static Q&A](#static-qa)
+- [String Q&A](java-static-qa.md)
+- [Static Q&A](java-string-qa.md)
