@@ -5,5 +5,5 @@
 
 
 ## Table of Contents
-- [String Q&A](java-static-qa.md)
-- [Static Q&A](java-string-qa.md)
+- [String Q&A](java-string-qa.md)
+- [Static Q&A](java-static-qa.md)
