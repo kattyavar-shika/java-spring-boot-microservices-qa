@@ -353,9 +353,9 @@ public class Test {
 ```
 
 - **Key points**
-- A static synchronized method locks the class-level monitor.
-- Other static synchronized methods are blocked until the first thread releases the lock.
-- Non-static methods can still be accessed concurrently by other threads, even when a static synchronized method is being executed by a thread.
+  - A static synchronized method locks the class-level monitor.
+  - Other static synchronized methods are blocked until the first thread releases the lock.
+  - Non-static methods can still be accessed concurrently by other threads, even when a static synchronized method is being executed by a thread.
 
 </details>
 
@@ -367,7 +367,7 @@ public class Test {
 - This feature helps in making the code more concise and readable, especially when you are dealing with frequently used static members like constants or utility methods.
 
 - **Syntax**
-- To import a static member, you use the import static keyword followed by the class name and the static member.
+  - To import a static member, you use the import static keyword followed by the class name and the static member.
 
 ```java
 import static packageName.ClassName.memberName;
@@ -392,16 +392,16 @@ public class StaticImportExample {
 
 ```
 - Explanation
-- - In the above example, we imported the static members PI and pow() from the Math class.
+  - In the above example, we imported the static members PI and pow() from the Math class.
 
 - **Key Points:**
-- Static import can only be used for static fields and static methods.
-- It improves readability when you have commonly used static methods or constants.
-- Overusing static import can lead to name conflicts, especially when you import static members from multiple classes that have methods or fields with the same name. It can also make code harder to read if not used carefully.
+  - Static import can only be used for static fields and static methods.
+  - It improves readability when you have commonly used static methods or constants.
+  - Overusing static import can lead to name conflicts, especially when you import static members from multiple classes that have methods or fields with the same name. It can also make code harder to read if not used carefully.
 - **When to Use Static Import?**
-- It's best used when you are dealing with constants (e.g., Math.PI, Integer.MAX_VALUE) or utility methods (e.g., Collections.sort(), Math.pow()) where adding the class name every time would be cumbersome.
+  - It's best used when you are dealing with constants (e.g., Math.PI, Integer.MAX_VALUE) or utility methods (e.g., Collections.sort(), Math.pow()) where adding the class name every time would be cumbersome.
 - **Potential Pitfalls:**
-- Name Conflicts: If two classes have the same static method or variable names, static import can lead to ambiguity.
+  - Name Conflicts: If two classes have the same static method or variable names, static import can lead to ambiguity.
 
 ```java
 import static java.util.Collections.*;  // static import for all methods in Collections
