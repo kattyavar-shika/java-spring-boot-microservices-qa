@@ -43,6 +43,22 @@ purposes.
 
 </details>
 
+## What is the difference between checked exceptions and unchecked exceptions in Java?
+
+<details>
+<summary>Answer</summary>
+
+| **Feature**               | **Checked Exceptions**                          | **Unchecked Exceptions**                       |
+|---------------------------|-------------------------------------------------|-----------------------------------------------|
+| **Compile-Time Checking**  | Checked at compile-time                         | Not checked at compile-time                   |
+| **Type**                   | Inherits from `Exception` (excluding `RuntimeException`) | Inherits from `RuntimeException`             |
+| **Handling Requirement**   | Must be either caught or declared using `throws` | Optional to catch or declare                  |
+| **Use Case**               | Recoverable conditions (e.g., I/O errors, DB errors) | Programming errors or bugs (e.g., null reference, array bounds) |
+| **Examples**               | `IOException`, `SQLException`, `FileNotFoundException` | `NullPointerException`, `ArrayIndexOutOfBoundsException` |
+
+
+</details>
+
 ## What is the difference between throw and throws?
 
 <details>
@@ -461,5 +477,7 @@ try (
     - For example, if pw attempted to write more data that relied on br being open, it would fail because br is already closed.
   - Reverse closure ensures resources are released in a safe and logical sequence.
 </details>
+
+
 
  
