@@ -1092,3 +1092,219 @@ class Department {
 ```
 
 </details>
+
+
+## What is an Interface in Java?
+<details>
+<summary>Answer</summary>
+
+- An interface in Java is a reference type, similar to a class, that can contain only constants, method signatures, default methods, static methods, and nested types. Interfaces cannot have instance fields, and all methods in an interface are implicitly abstract (unless they are default or static methods). 
+- A class implements an interface, providing concrete implementations for the interface's methods.
+
+```java
+interface Animal {
+    void sound();  // abstract method
+}
+
+class Dog implements Animal {
+    public void sound() {
+        System.out.println("Bark");
+    }
+}
+
+```
+
+</details>
+
+## What is the difference between an interface and an abstract class?
+<details>
+<summary>Answer</summary>
+
+- **Abstract class** can have both abstract (no body) and concrete methods (with body), while an **interface** can have abstract methods (except for default, static methods, private method (java 9 onwards.)).
+- A class can extend only one abstract class, but it can implement multiple interfaces.
+- Abstract classes can have member variables, while interfaces can only have constants (public, static, final variables).
+- Interfaces are ideal for defining a contract, whereas abstract classes are useful when some shared functionality needs to be provided.
+
+</details>
+
+## Can an interface have a constructor?
+<details>
+<summary>Answer</summary>
+
+- No, interfaces cannot have constructors. Constructors are used to initialize objects, but interfaces cannot be instantiated directly. 
+- They are meant to be implemented by classes, which can provide their own constructors.
+
+</details>
+
+## What is the purpose of default methods in interfaces?
+<details>
+<summary>Answer</summary>
+
+- Default methods, introduced in Java 8, allow interfaces to have methods with an implementation. This helps maintain backward compatibility when adding new methods to an interface. 
+- Classes that implement the interface can use the default method or override it if necessary.
+
+```java
+interface Animal {
+    default void eat() {
+        System.out.println("Eating...");
+    }
+}
+
+class Dog implements Animal {
+    // Can override eat() or use the default method
+}
+
+```
+</details>
+
+##  What happens if a class implements two interfaces with the same default method?
+<details>
+<summary>Answer</summary>
+
+- If a class implements two interfaces that both have the same default method, the class will encounter a conflict and need to provide its own implementation to resolve the ambiguity.
+
+Example 
+
+```java
+interface Animal {
+  default void sound() {
+    System.out.println("Animal sound");
+  }
+}
+
+interface Dog {
+  default void sound() {
+    System.out.println("Bark");
+  }
+}
+
+class MixedBreed implements Animal, Dog {
+  public void sound() {
+    System.out.println("Mixed breed sound");
+  }
+}
+
+```
+
+</details>
+
+## Can an interface extend another interface?
+<details>
+<summary>Answer</summary>
+
+- Yes, an interface can extend another interface. The extending interface inherits the abstract methods from the parent interface. A class that implements the child interface must provide implementations for all methods of the parent and child interfaces.
+- Example
+
+```java
+interface Animal {
+    void sound();
+}
+
+interface Dog extends Animal {
+    void bark();
+}
+
+class Labrador implements Dog {
+    public void sound() {
+        System.out.println("Animal sound");
+    }
+
+    public void bark() {
+        System.out.println("Woof");
+    }
+}
+
+```
+
+</details>
+
+## Can an interface extend multiple interfaces?
+<details>
+<summary>Answer</summary>
+
+- Yes, an interface can extend multiple interfaces, thereby inheriting their abstract methods.
+
+```java
+// A class can implement multiple interfaces
+interface Animal {
+    void sound();
+}
+
+interface Swimmer {
+    void swim();
+}
+
+class Dog implements Animal, Swimmer {
+    public void sound() {
+        System.out.println("Bark");
+    }
+
+    public void swim() {
+        System.out.println("Dog is swimming");
+    }
+}
+
+// An interface can extend multiple interfaces
+interface DogBehavior extends Animal, Swimmer {
+    void fetch();
+}
+
+```
+</details>
+
+## Can we implement an interface in another interface?
+<details>
+<summary>Answer</summary>
+
+- An interface cannot be implemented by another interface, but it can be extended by another interface. A class is responsible for implementing the methods defined in an interface, whereas an interface can inherit methods from another interface using the extends keyword.
+
+Example
+
+```java
+interface Animal {
+    void sound();
+}
+
+// Correct: An interface can extend another interface
+interface Dog extends Animal {
+    void bark();
+}
+
+```
+
+</details>
+
+## How many interfaces can a class implement, and how many interfaces can an interface extend?
+<details>
+<summary>Answer</summary>
+
+- A class can implement multiple interfaces (Java allows multiple inheritance for interfaces, unlike classes).
+- An interface can also extend multiple interfaces. An interface is allowed to inherit the abstract methods of multiple other interfaces.
+
+```java
+// A class can implement multiple interfaces
+interface Animal {
+    void sound();
+}
+
+interface Swimmer {
+    void swim();
+}
+
+class Dog implements Animal, Swimmer {
+    public void sound() {
+        System.out.println("Bark");
+    }
+
+    public void swim() {
+        System.out.println("Dog is swimming");
+    }
+}
+
+// An interface can extend multiple interfaces
+interface DogBehavior extends Animal, Swimmer {
+    void fetch();
+}
+
+```
+</details>
