@@ -383,10 +383,4 @@ interface MyFunction {
 
 In this case, trying to use this inside a static context will lead to a compilation error, as this cannot be referenced from a static method, where no instance exists.
 
-
-
 </details>
-
-# todo
-this and lambada.
-what was need of lambda in java
