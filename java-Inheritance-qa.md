@@ -1308,3 +1308,207 @@ interface DogBehavior extends Animal, Swimmer {
 
 ```
 </details>
+
+## Can an Interface have a main method in Java?
+<details>
+<summary>Answer</summary>
+
+- Yes, an interface can have a main method in Java, just like any other class. 
+- The main method in an interface can be used for testing purposes or to provide a default behavior for the interface.
+
+Example
+
+```java
+interface MyInterface {
+    static void main(String[] args) {
+        System.out.println("Main method in an interface");
+    }
+}
+
+```
+
+- However, to run the program, you would need to call the interface's main method directly, not through an instance or implementation.
+
+</details>
+
+## What is a Marker Interface in Java?
+<details>
+<summary>Answer</summary>
+
+-  A marker interface is an interface with no methods or fields.
+- It serves as a "tag" to indicate that a class possesses some special behavior or should be treated in a particular way by the JVM or other frameworks. 
+- Examples include Serializable and Cloneable.
+
+```java
+interface MyMarkerInterface {
+    // No methods
+}
+
+class MyClass implements MyMarkerInterface {
+    // Class with no additional behavior
+}
+
+```
+
+- Use case: A marker interface is often used to indicate that a class has certain properties or capabilities, such as being serializable or clonable.
+
+</details>
+
+## Can an Interface have static methods?
+<details>
+<summary>Answer</summary>
+
+- Yes, starting from Java 8, interfaces can have static methods. These methods must have a body, and they cannot be overridden by implementing classes. 
+- Static methods in interfaces are typically used to provide utility methods related to the interface.
+
+```java
+interface MyInterface {
+    static void staticMethod() {
+        System.out.println("This is a static method in an interface.");
+    }
+}
+
+class MyClass implements MyInterface {
+    // Cannot override static methods.
+}
+
+public class Main {
+    public static void main(String[] args) {
+        MyInterface.staticMethod(); // Calling static method directly on the interface.
+    }
+}
+
+```
+</details>
+
+## Can we instantiate an interface in Java?
+<details>
+<summary>Answer</summary>
+
+-  No, you cannot instantiate an interface directly in Java. 
+- Interfaces are abstract by nature and cannot be directly instantiated. 
+- However, you can create an instance of a class that implements the interface.
+
+```java
+interface Animal {
+    void sound();
+}
+
+class Dog implements Animal {
+    public void sound() {
+        System.out.println("Bark");
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        // Animal a = new Animal(); // This will throw an error because you cannot instantiate an interface
+        Animal dog = new Dog();  // Valid: Dog implements Animal
+        dog.sound();  // Output: Bark
+    }
+}
+
+```
+</details>
+
+##  What is the purpose of the @FunctionalInterface annotation in Java?
+<details>
+<summary>Answer</summary>
+
+- The @FunctionalInterface annotation is used to indicate that an interface is intended to be a functional interface. 
+- A functional interface is an interface with exactly one abstract method. 
+- It can optionally have multiple default or static methods.
+
+- The annotation is not mandatory but serves as a marker to tell the compiler that the interface should have a single abstract method, making it suitable for lambda expressions and method references.
+
+```java
+@FunctionalInterface
+interface MyFunctionalInterface {
+    void doSomething();  // Exactly one abstract method
+    
+    // Optional default method
+    default void defaultMethod() {
+        System.out.println("This is a default method.");
+    }
+}
+
+```
+</details>
+
+## Is it possible to override a default method in an interface?
+<details>
+<summary>Answer</summary>
+
+- Yes, it is possible to override a default method in an interface. 
+- When a class implements an interface and provides its own implementation for a default method, it overrides the default method.
+
+- However, overriding a default method is optional, and if the class doesn't override it, the default implementation from the interface will be used.
+
+
+```java
+interface Animal {
+    default void sound() {
+        System.out.println("Some animal sound");
+    }
+}
+
+class Dog implements Animal {
+    // Override default method
+    public void sound() {
+        System.out.println("Bark");
+    }
+}
+
+class Cat implements Animal {
+    // No override, uses default method
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Animal dog = new Dog();
+        dog.sound();  // Output: Bark
+        
+        Animal cat = new Cat();
+        cat.sound();  // Output: Some animal sound (default method)
+    }
+}
+
+```
+
+</details>
+
+## Can an interface be generic in Java?
+<details>
+<summary>Answer</summary>
+
+- Yes, interfaces can be generic in Java. 
+- A generic interface allows you to define methods with type parameters, making it possible to use different types when implementing the interface.
+
+```java
+interface Box<T> {
+    void setItem(T item);
+    T getItem();
+}
+
+class StringBox implements Box<String> {
+    private String item;
+
+    public void setItem(String item) {
+        this.item = item;
+    }
+
+    public String getItem() {
+        return item;
+    }
+}
+
+public class Test {
+    public static void main(String[] args) {
+        Box<String> stringBox = new StringBox();
+        stringBox.setItem("Hello");
+        System.out.println(stringBox.getItem());  // Output: Hello
+    }
+}
+
+```
+</details>
