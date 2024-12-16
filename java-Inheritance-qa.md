@@ -1512,3 +1512,253 @@ public class Test {
 
 ```
 </details>
+
+
+## What are the different types of inner classes in Java?
+<details>
+<summary>Answer</summary>
+
+**There are four types of inner classes in Java:**
+- **Member Inner Class:** A class defined within another class, but outside any method or constructor. It can access the members (including private members) of the outer class.
+
+```java
+class Outer {
+    private int x = 10;
+    
+    class Inner {
+        void display() {
+            System.out.println(x);  // Can access outer class member x
+        }
+    }
+}
+
+```
+
+- **Local Inner Class:** A class defined within a method or a block of code. It can access local variables and parameters of the method if they are declared final or effectively final.
+
+```java
+class Outer {
+    void myMethod() {
+        final int y = 5;
+        class LocalInner {
+            void display() {
+                System.out.println(y);  // Can access final local variable y
+            }
+        }
+        LocalInner li = new LocalInner();
+        li.display();
+    }
+}
+
+```
+
+- **Anonymous Inner Class:** A class without a name, defined at the point of instantiation. Typically used to implement interfaces or extend a class for a one-time use.
+```java
+interface Hello {
+    void greet();
+}
+
+public class Outer {
+    public static void main(String[] args) {
+        Hello hello = new Hello() {  // Anonymous inner class implementing Hello interface
+            public void greet() {
+                System.out.println("Hello, World!");
+            }
+        };
+        hello.greet();
+    }
+}
+
+```
+
+- **Static Nested Class:** A static class defined within another class. It does not have access to the instance variables and methods of the outer class, but it can access static members of the outer class.
+
+```java
+class Outer {
+    static int x = 10;
+    
+    static class StaticNested {
+        void display() {
+            System.out.println(x);  // Can access static member x of outer class
+        }
+    }
+}
+
+```
+
+</details>
+
+## What is the difference between a static nested class and a regular inner class?
+<details>
+<summary>Answer</summary>
+
+**Static Nested Class:**
+- Defined with the static keyword.
+- It does not have access to the instance variables and methods of the outer class.
+- Can be instantiated without creating an instance of the outer class.
+- Can access only static members of the outer class.
+
+**Regular Inner Class (Non-static):**
+- Can access both static and non-static members (including private) of the outer class.
+- Requires an instance of the outer class to be instantiated.
+- Has an implicit reference to the outer class instance.
+
+```java
+class Outer {
+    static int staticVar = 10;
+    int instanceVar = 20;
+    
+    static class StaticNested {
+        void display() {
+            System.out.println(staticVar);  // Can access staticVar, but not instanceVar
+        }
+    }
+    
+    class Inner {
+        void display() {
+            System.out.println(instanceVar);  // Can access both static and instance variables
+        }
+    }
+}
+
+```
+
+</details>
+
+## Can an inner class access the members of the outer class?
+<details>
+<summary>Answer</summary>
+
+- Yes, an inner class can access both instance and static members of the outer class. 
+- However, the level of access depends on whether the inner class is static or non-static.
+- Non-static inner class can access all members (including private) of the outer class because it has a reference to the outer class instance.
+- Static inner class can only access static members of the outer class.
+
+</details>
+
+## What is the purpose of using anonymous inner classes?
+<details>
+<summary>Answer</summary>
+
+-  Anonymous inner classes are used when you need to implement an interface or extend a class just once and don't want to create a separate named class. 
+- They provide a concise way to implement methods of interfaces or abstract classes in place, which helps reduce boilerplate code.
+- Commonly used for event handling in GUI programming (e.g., ActionListener in Swing).
+- Often used with functional interfaces (lambdas can be a more modern alternative).
+
+```java
+interface MyInterface {
+    void display();
+}
+
+public class Test {
+    public static void main(String[] args) {
+        MyInterface obj = new MyInterface() {
+            public void display() {
+                System.out.println("Anonymous Inner Class!");
+            }
+        };
+        obj.display();
+    }
+}
+
+```
+
+</details>
+
+##  How can you instantiate a non-static inner class?
+<details>
+<summary>Answer</summary>
+
+- To instantiate a non-static inner class, you need to first create an instance of the outer class. 
+- Once the outer class instance is created, you can instantiate the inner class using the outer class instance.
+
+Example 
+
+```java
+class Outer {
+    private String message = "Hello from Outer class";
+
+    class Inner {
+        void display() {
+            System.out.println(message);  // Accesses outer class's private field
+        }
+    }
+
+    public static void main(String[] args) {
+        Outer outer = new Outer();  // Create instance of Outer class
+        Outer.Inner inner = outer.new Inner();  // Create instance of Inner class
+        inner.display();  // Call inner class method
+    }
+}
+
+```
+</details>
+
+## What is the significance of this keyword inside an inner class?
+<details>
+<summary>Answer</summary>
+
+- The this keyword inside an inner class refers to the current instance of the inner class itself, not the outer class. 
+- However, you can refer to the outer class’s instance using OuterClassName.this.
+
+- this: Refers to the instance of the inner class.
+- OuterClassName.this: Refers to the instance of the outer class.
+
+
+```java
+class Outer {
+    private String outerMessage = "Outer class message";
+
+    class Inner {
+        private String innerMessage = "Inner class message";
+
+        void showMessages() {
+            // Refers to the inner class instance
+            System.out.println("Inner: " + this.innerMessage);  
+            // Refers to the outer class instance
+            System.out.println("Outer: " + Outer.this.outerMessage); 
+        }
+    }
+
+    public static void main(String[] args) {
+        Outer outer = new Outer();
+        Outer.Inner inner = outer.new Inner();
+        inner.showMessages();
+    }
+}
+
+```
+
+</details>
+
+## Can an interface extend a class?
+<details>
+<summary>Answer</summary>
+
+- **No**, an interface cannot extend a class. An interface can only extend another interface. In Java, interfaces support multiple inheritance, whereas classes support single inheritance.
+- An interface cannot implement methods from a class, but it can implement default methods.
+
+- However, a class can implement multiple interfaces, and an interface can extend multiple interfaces.
+
+```java
+interface A {
+    void methodA();
+}
+
+interface B extends A {
+    void methodB();
+}
+
+class C implements B {
+    public void methodA() {
+        System.out.println("Method A");
+    }
+    
+    public void methodB() {
+        System.out.println("Method B");
+    }
+}
+
+```
+
+</details>
