@@ -682,9 +682,162 @@ public Resource<User> getUser(@PathVariable Long id) {
 </details>
 
 
+## Difference between `@ControllerAdvice` and `@RestControllerAdvice`
+
+<details>
+<summary>Answer</summary>
+
+- Both `@ControllerAdvice` and `@RestControllerAdvice` are used for global exception handling in Spring applications. However, they are used in different scenarios based on the type of controller and response format.
+
+Key Differences
+
+| Feature                   | `@ControllerAdvice`                      | `@RestControllerAdvice`                      |
+|---------------------------|------------------------------------------|---------------------------------------------|
+| **Target**                 | Works with controllers that return views (HTML, JSP, etc.). | Works with REST controllers returning raw data (JSON, XML, etc.). |
+| **Response Type**          | Response could be a view (HTML, JSP) or other types. | Response is always written to the response body as JSON or other formats. |
+| **`@ResponseBody` Behavior**| Not automatically added; you have to use `@ResponseBody` on methods if needed. | Automatically applies `@ResponseBody` to all handler methods. |
+| **Use Case**               | Global exception handling, model attributes, etc., for MVC controllers. | Global exception handling, response customization for REST APIs. |
+
+- When to Use Which?
+- **Use `@ControllerAdvice`** if you're building a **traditional Spring MVC application** that returns views (HTML, JSP, etc.) and you want global exception handling, model attributes, etc.
+- **Use `@RestControllerAdvice`** if you're building a **RESTful API** where controllers return JSON or XML responses. It simplifies the creation of global exception handlers and ensures responses are automatically formatted in the desired way (usually JSON).
+
+
+Summary:
+- **`@ControllerAdvice`**: Ideal for traditional Spring MVC applications that deal with views, typically used for handling exceptions and adding global model attributes.
+- **`@RestControllerAdvice`**: Specifically tailored for REST APIs that return JSON or similar data formats, combining the functionality of `@ControllerAdvice` with `@ResponseBody` automatically applied to all methods.
+
+</details>
  
 
+## Exception handling for only rest api with example.
+<details>
+<summary>Answer</summary>
 
+- Steps to Implement Exception Handling with @RestControllerAdvice:
+  - Create a custom exception class.
+  - Define a global exception handler using @RestControllerAdvice.
+  - Return a meaningful JSON response when an exception occurs.
+
+1. Custom Exception Class
+- Let's first create a custom exception class that will be used to represent errors in your application.
+
+```java
+package com.example.demo.exception;
+
+public class ResourceNotFoundException extends RuntimeException {
+
+    private String resourceName;
+    private String fieldName;
+    private Object fieldValue;
+
+    public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
+        super(String.format("%s not found with %s : '%s'", resourceName, fieldName, fieldValue));
+        this.resourceName = resourceName;
+        this.fieldName = fieldName;
+        this.fieldValue = fieldValue;
+    }
+
+    public String getResourceName() {
+        return resourceName;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public Object getFieldValue() {
+        return fieldValue;
+    }
+}
+
+```
+In this example, ResourceNotFoundException is a custom exception that could be used when a resource (such as a user or product) is not found by its identifier.
+
+- 2. Define Global Exception Handler Using @RestControllerAdvice
+
+
+Now, let's create a global exception handler using @RestControllerAdvice to handle this custom exception, as well as any other exceptions in the application.
+
+```java
+package com.example.demo.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+// This will handle exceptions globally for all @RestController classes
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        // Prepare a response map
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("resourceName", ex.getResourceName());
+        response.put("fieldName", ex.getFieldName());
+        response.put("fieldValue", ex.getFieldValue());
+
+        // Return a JSON response with 404 NOT FOUND status
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    // Handle any other uncaught exceptions globally
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", ex.getMessage());
+        response.put("details", "An unexpected error occurred.");
+        
+        // Return a generic error response with 500 INTERNAL SERVER ERROR status
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+}
+
+```
+
+Where:
+- @RestControllerAdvice: This annotation is used to define a global exception handler for all REST controllers. It acts similarly to @ControllerAdvice but is specifically designed for REST APIs.
+- @ExceptionHandler: The @ExceptionHandler annotation is used to handle specific exceptions (like ResourceNotFoundException in this case). It catches the exception and sends an appropriate response.
+- Response Structure: In the handler, we're returning a Map<String, Object> with the exception message and other details, and Spring Boot automatically converts it to JSON (since @RestControllerAdvice implicitly applies @ResponseBody).
+
+
+finally Controller Example:
+Let's create a simple controller to test this exception handling.
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.exception.ResourceNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+// This is a simple REST controller that will throw an exception when a resource is not found
+@RestController
+public class ProductController {
+
+  @GetMapping("/products/{id}")
+  public String getProduct(@PathVariable("id") Long id) {
+    // Simulate a situation where the product is not found
+    if (id != 1L) {  // Suppose only the product with ID 1 exists
+      throw new ResourceNotFoundException("Product", "id", id);
+    }
+
+    return "Product found";
+  }
+}
+
+```
+In this controller, if the id doesn't match 1L, a ResourceNotFoundException is thrown, and it will be handled by the @RestControllerAdvice class we defined earlier.
+
+
+</details>
 
 
 
