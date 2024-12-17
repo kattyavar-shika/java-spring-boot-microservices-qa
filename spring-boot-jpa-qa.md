@@ -646,7 +646,46 @@ You can also configure additional properties like:
 
 </details>
 
+## What is the @Transient annotation in JPA?
+<details>
+<summary>Answer</summary>
 
+- The @Transient annotation in JPA is used to indicate that a particular field in an entity class should not be persisted to the database. 
+- This annotation marks the field to be ignored by the persistence provider (like Hibernate) during the process of saving or loading an entity from the database. 
+- It is useful when a field holds temporary or calculated data that doesn't need to be stored in the database.
+
+```java
+@Entity
+public class Employee {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @Transient
+    private int age;
+
+    // getters and setters
+}
+
+```
+- In this example, the age field will not be persisted in the database, even though it's a part of the Employee entity.
+
+</details>
+
+## When would you use @Transient in a JPA entity?
+<details>
+<summary>Answer</summary>
+
+- You would use @Transient in the following scenarios:
+  - Non-persistent fields: When you want to include a field in your entity that should not be saved to the database (e.g., a transient value, a computed property, or a field for business logic purposes).
+  - Calculated fields: For example, if you have a field that is derived from other fields but doesn't need to be stored (e.g., an age calculated from a date of birth).
+  - Temporary data: When the field holds temporary data that doesn't need to be persisted, such as session-related data or a value calculated at runtime.
+
+
+</details>
 
 
 
