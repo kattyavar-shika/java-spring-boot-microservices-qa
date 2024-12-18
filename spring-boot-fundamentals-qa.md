@@ -14,6 +14,28 @@
 
 </details>
 
+## Spring Boot Vs Spring Framework
+<details>
+<summary>Answer</summary>
+
+ <summary>Comparison of Spring Boot and Spring Framework</summary>
+
+| Feature/Aspect         | Spring Framework                      | Spring Boot                          |
+    |------------------------|---------------------------------------|--------------------------------------|
+| **Configuration**      | Requires extensive XML or Java-based configuration. | Simplifies configuration with auto-configuration and annotations. |
+| **Setup Time**         | More time-consuming setup due to manual configurations. | Quick setup with Spring Initializr and embedded server options. |
+| **Project Structure**  | Flexible structure; can be complex based on project requirements. | Opinionated project structure with a standard convention. |
+| **Dependency Management** | Manual management of dependencies; may require additional configuration. | Dependency management handled automatically with a starter dependency system. |
+| **Embedded Server**    | Requires separate configuration to run on an embedded server. | Comes with embedded servers (Tomcat, Jetty, etc.) out of the box. |
+| **Microservices Support** | Supports microservices but requires more configuration. | Designed for microservices with features like Spring Cloud integration. |
+| **Development Speed**  | Slower development due to extensive boilerplate code. | Faster development with less boilerplate and rapid prototyping. |
+| **Testing Support**    | Requires configuration for testing components. | Provides built-in support for testing with annotations like `@SpringBootTest`. |
+| **Community & Ecosystem** | Large community, but Spring Boot has become the preferred choice. | Rapidly growing community; increasingly preferred for new applications. |
+| **Learning Curve**     | Steeper learning curve due to complexity. | Easier to learn due to simplified features and clear documentation. |
+
+
+</details>
+
 ## What are the key features of Spring Boot?
 <details>
 <summary>Answer</summary>
@@ -1469,6 +1491,80 @@ web-server:
 
 </details>
 
+## What is ConversionService in Spring?
+<details>
+<summary>Answer</summary>
 
+- The ConversionService is a core Spring framework interface that provides the ability to convert objects from one type to another. 
+- It’s a part of Spring's data binding and type conversion mechanism. 
+- The service is typically used to convert request parameters to Java object types, or to convert between Java types (e.g., converting a String to a Date or Integer).
+
+Example:
+
+```java
+import org.springframework.core.convert.converter.Converter;
+
+public class StringToCustomObjectConverter implements Converter<String, CustomObject> {
+    @Override
+    public CustomObject convert(String source) {
+        CustomObject customObject = new CustomObject();
+        customObject.setValue(source);
+        return customObject;
+    }
+}
+
+```
+
+
+How can we use? 
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class MyController {
+
+    @Autowired
+    private ConversionService conversionService;
+
+    @GetMapping("/convert")
+    public String convert(@RequestParam("value") String value) {
+        // Convert string to custom object using the registered converter
+        CustomObject customObject = conversionService.convert(value, CustomObject.class);
+        return "Converted value: " + customObject.getValue();
+    }
+}
+
+```
+
+</details>
 
  
+## Can ConversionService be used with Spring Data JPA for entity conversion?
+<details>
+<summary>Answer</summary>
+
+- Yes, ConversionService can be used with Spring Data JPA, although it's not commonly used for entity-to-entity conversion. 
+- You can use it to convert DTOs (Data Transfer Objects) to JPA entities or vice versa, especially when you need to map custom fields or perform complex data transformations.
+
+Example:
+```java
+import org.springframework.core.convert.ConversionService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class MyService {
+
+    @Autowired
+    private ConversionService conversionService;
+
+    public MyDto convertToDto(MyEntity entity) {
+        return conversionService.convert(entity, MyDto.class);
+    }
+}
+
+```
+</details>
