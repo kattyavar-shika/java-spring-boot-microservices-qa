@@ -1762,3 +1762,182 @@ class C implements B {
 ```
 
 </details>
+
+
+## What is the importance of the throws clause when overriding a method in Java? Explain the rules regarding exception declarations in the subclass when the base class method throws a checked or unchecked exception. What exceptions can a subclass method throw, and what exceptions are not allowed to be thrown when overriding a method?
+<details>
+<summary>Answer</summary>
+
+
+| **UseCase no.** | **Base Class Exception Declaration** | **Derived Class Exception Declaration** | **Allowed/Not Allowed** |
+|-----------------|--------------------------------------|------------------------------------------|--------------------|
+| 1               |Throws a checked exception (e.g., `IOException`)      | Throws the same checked exception (e.g., `IOException`) | Allowed |
+| 2               |Throws a checked exception (e.g., `IOException`) | Throws a subtype of the checked exception (e.g., `FileNotFoundException`) | Allowed |
+| 3               |Throws a checked exception (e.g., `IOException`) | Throws a broader checked exception (e.g., `Exception`) | Not Allowed |
+| 4               |Throws a checked exception (e.g., `IOException`) | Throws an unchecked exception (e.g., `RuntimeException`) | Allowed |
+| 5               |Throws a checked exception (e.g., `IOException`) | Throws no exception at all | Allowed |
+| 6               |Throws no exception at all | Throws any checked exception (e.g., `IOException`) | Not Allowed |
+| 7               |Throws no exception at all | Throws an unchecked exception (e.g., `RuntimeException`) | Allowed |
+| 8               |throws ArrayIndexOutOfBoundsException | Throws a broader unchecked exception (e.g. `throws RuntimeException` | Allowed|
+
+
+
+Key Points to Consider:
+- **Checked exceptions**: The subclass can only throw **the same checked exception** or a **subtype** of the checked exception thrown by the base class. Throwing a **broader checked exception** is **not allowed**.
+- **Unchecked exceptions**: If the base class throws a checked exception, the subclass can throw an **unchecked exception** (like `RuntimeException`).
+- **No exceptions**: If the base class doesn't declare any exceptions, the subclass **cannot** throw a checked exception, but it **can** throw an unchecked exception.
+ 
+Example of each use Case
+
+Case 1:
+- Base class    : Throws a checked exception (e.g., IOException)	
+- Derived class : Throws the same checked exception (e.g., IOException)
+- Allowed/Not Allowed : Allowed
+
+```java
+class Base {
+  public void readFile() throws IOException {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws IOException { // Allowed
+    // Implementation
+  }
+}
+```
+
+Case 2:
+- Base class    : Throws a checked exception (e.g., IOException)
+- Derived class : Throws a subtype of the checked exception (e.g., FileNotFoundException)
+- Allowed/Not Allowed : Allowed
+```java
+class Base {
+  public void readFile() throws IOException {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws FileNotFoundException { // Allowed
+    // Implementation
+  }
+}
+```
+
+case 3:
+- Base class    : Throws a checked exception (e.g., IOException)
+- Derived class : Throws a broader checked exception (e.g., Exception)
+- Allowed/Not Allowed : Not Allowed
+
+```java
+class Base {
+  public void readFile() throws IOException {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws Exception { // Not Allowed compiler error
+    // Implementation
+  }
+}
+```
+
+case 4:
+- Base class    : Throws a checked exception (e.g., IOException)
+- Derived class : Throws an unchecked exception (e.g., RuntimeException)
+- Allowed/Not Allowed :  Allowed
+
+```java
+class Base {
+  public void readFile() throws IOException {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws RuntimeException { // Allowed 
+    // Implementation
+  }
+}
+```
+
+case 5:
+- Base class    : Throws a checked exception (e.g., IOException)
+- Derived class : Throws no exception at all
+- Allowed/Not Allowed :  Allowed
+
+```java
+class Base {
+  public void readFile() throws IOException {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile()  { // Allowed
+    // Implementation
+  }
+}
+```
+
+case 6:
+- Base class    : Throws no exception at all
+- Derived class : Throws any checked exception (e.g., IOException)
+- Allowed/Not Allowed :  Note Allowed
+```java
+class Base {
+  public void readFile()  {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws IOException { // Not Allowed compiler error
+    // Implementation
+  }
+}
+```
+
+case 7:
+
+- Base class    : Throws no exception at all
+- Derived class : Throws an unchecked exception (e.g., RuntimeException)
+- Allowed/Not Allowed :  Allowed
+
+```java
+class Base {
+  public void readFile()  {
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws RuntimeException { // Allowed 
+    // Implementation
+  }
+}
+```
+
+case 8:
+
+- Base class    : throws ArrayIndexOutOfBoundsException
+- Derived class : Throws a broader unchecked exception (e.g. throws RuntimeException
+- Allowed/Not Allowed :  Allowed
+- 
+```java
+class Base {
+  public void readFile()  throws ArrayIndexOutOfBoundsException{
+    // Implementation
+  }
+}
+
+class Derived extends Base {
+  public void readFile() throws RuntimeException { // Allowed
+    // Implementation
+  }
+}
+```
+</details>
