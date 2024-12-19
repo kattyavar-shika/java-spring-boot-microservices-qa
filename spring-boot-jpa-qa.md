@@ -687,10 +687,260 @@ public class Employee {
 
 </details>
 
+## What is @JsonManagedReference in Spring and why is it used?
+<details>
+<summary>Answer</summary>
+
+- @JsonManagedReference is a Jackson annotation used to handle bidirectional relationships between entities in a Spring application, specifically when using JPA (Java Persistence API). 
+- It is typically used in cases where you have a parent-child relationship between entities.
+
+- In bidirectional relationships, when Jackson serializes an object, it can encounter infinite recursion, because the parent refers to the child, and the child refers back to the parent. 
+- To solve this, @JsonManagedReference is applied on the "forward" side of the relationship (usually the parent), and @JsonBackReference is used on the "back" side (usually the child). 
+- This way, the parent side is serialized normally, but the child’s reference to the parent is ignored during serialization.
+
+Example:
+
+```java
+@Entity
+public class Parent {
+  @Id
+  private Long id;
+
+  @OneToMany(mappedBy = "parent")
+  @JsonManagedReference
+  private List<Child> children;
+
+  // getters and setters
+}
+
+@Entity
+public class Child {
+  @Id
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "parent_id")  // This is where you specify the foreign key column
+  @JsonBackReference
+  private Parent parent;
+
+  // getters and setters
+}
+
+```
+- The Parent entity has a collection of Child entities and is marked with @JsonManagedReference to indicate that the Parent side should be serialized.
+- The Child entity has a reference to the Parent and is marked with @JsonBackReference, meaning the Child side will not be serialized to **avoid infinite recursion**.
 
 
+</details>
+
+##  Can you use @JsonManagedReference without @JsonBackReference?
+<details>
+<summary>Answer</summary>
+
+- While technically possible, it is not recommended to use @JsonManagedReference without @JsonBackReference in bidirectional relationships. 
+- The purpose of these two annotations is to ensure that only one side of the relationship (usually the parent or "forward" side) is serialized, and the other side (the "back" side) is ignored to avoid infinite recursion.
+
+- If you only use @JsonManagedReference without @JsonBackReference, you may end up with serialized objects that contain cyclic references, which can lead to stack overflow errors or infinite loops during serialization. 
+- To prevent this, @JsonBackReference should be used on the child entity to break the circular reference.
+
+</details>
+
+## What happens if you apply @JsonManagedReference to both sides of a bidirectional relationship?
+<details>
+<summary>Answer</summary>
+
+- If you apply @JsonManagedReference to both sides of a bidirectional relationship, Jackson will still attempt to serialize both sides of the relationship, leading to an infinite recursion. This will cause a StackOverflowError or other serialization-related errors. 
+- To avoid this, you should apply @JsonManagedReference on one side (typically the "parent") and @JsonBackReference on the other side (typically the "child").
+
+For example, this is incorrect:
+
+```java
+@Entity
+public class Parent {
+    @Id
+    private Long id;
+
+    @OneToMany(mappedBy = "parent")
+    @JsonManagedReference
+    private List<Child> children;
+
+    // getters and setters
+}
+
+@Entity
+public class Child {
+    @Id
+    private Long id;
+
+    @ManyToOne
+    @JsonManagedReference // This is wrong
+    private Parent parent;
+
+    // getters and setters
+}
+
+```
+
+- In the above code, both Parent and Child are annotated with @JsonManagedReference, which leads to infinite recursion when the object graph is serialized. 
+- The correct solution is to apply @JsonManagedReference on the parent side and @JsonBackReference on the child side.
+
+</details>
+
+##  Can you explain the difference between @JsonManagedReference and @JsonBackReference?
+<details>
+<summary>Answer</summary>
+
+- @JsonManagedReference: This annotation is applied to the "forward" side of a bidirectional relationship (typically the parent entity). It marks the reference that Jackson should serialize. Essentially, it tells Jackson to include this property during serialization.
+- @JsonBackReference: This annotation is applied to the "back" side of a bidirectional relationship (typically the child entity). It marks the reference that Jackson should not serialize. Instead of including this property, Jackson will simply ignore it during serialization, effectively preventing infinite recursion.
+
+Example:
+
+```java
+ @Entity
+public class Parent {
+  @Id
+  private Long id;
+
+  @OneToMany(mappedBy = "parent")
+  @JsonManagedReference
+  private List<Child> children;
+
+  // getters and setters
+}
+
+@Entity
+public class Child {
+  @Id
+  private Long id;
+
+  @ManyToOne
+  @JoinColumn(name = "parent_id")  // This is where you specify the foreign key column
+  @JsonBackReference
+  private Parent parent;
+
+  // getters and setters
+}
+```
+
+In this above example
+
+- The @JsonManagedReference is on the Parent entity's children collection, allowing the list of Child entities to be serialized.
+- The @JsonBackReference is on the Child entity’s reference to Parent, so this reference is ignored during serialization.
+
+</details>
+
+##  What other ways can you prevent infinite recursion in bidirectional relationships in Spring?
+<details>
+<summary>Answer</summary>
+
+- In addition to using @JsonManagedReference and @JsonBackReference, there are a few other ways to prevent infinite recursion:
+
+- @JsonIgnore: You can use this annotation on one side of a relationship to entirely ignore that property during serialization. This prevents recursion but may not be as fine-grained as @JsonManagedReference/@JsonBackReference.
+
+```java
+@Entity
+public class Parent {
+    @Id
+    private Long id;
+
+    @OneToMany(mappedBy = "parent")
+    @JsonIgnore
+    private List<Child> children;
+
+    // getters and setters
+}
+
+```
+- @JsonIdentityInfo: This annotation allows you to represent the object with an ID (using @JsonIdentityInfo), thus preventing the recursive serialization by referring to the object via its ID instead of its full content.
+
+```java
+@Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+public class Parent {
+    @Id
+    private Long id;
+
+    @OneToMany(mappedBy = "parent")
+    private List<Child> children;
+
+    // getters and setters
+}
+
+```
+
+- @JsonIgnoreProperties: You can use this annotation to ignore specific properties during serialization, which is useful if you want to prevent recursion on a specific field.
+
+```java
+@Entity
+@JsonIgnoreProperties("parent")
+public class Child {
+    @Id
+    private Long id;
+
+    @ManyToOne
+    private Parent parent;
+
+    // getters and setters
+}
+
+```
+
+</details>
+
+## What is the purpose of @ToString.Exclude in Lombok, and when should it be used?
+<details>
+<summary>Answer</summary>
+
+- @ToString.Exclude is a Lombok annotation used to exclude certain fields from the toString() method generated by Lombok's @ToString annotation. Lombok automatically generates a toString() method for a class, but there are situations where certain fields should not be included in the generated toString() output—such as sensitive information (e.g., passwords), large objects (e.g., collections), or relationships that might cause infinite recursion (e.g., bidirectional JPA entity relationships).
+
+- When applied to a field, @ToString.Exclude tells Lombok to skip that field when it generates the toString() method.
+
+```java
+import lombok.ToString;
+
+@ToString
+public class User {
+
+    private Long id;
+    private String name;
+    private String password;
+
+    @ToString.Exclude
+    private String password;
+
+    // Getters and setters
+}
+
+```
+
+- In this example, the password field will be excluded from the toString() method output. This is useful when you want to prevent sensitive information from being exposed in logs or debugging outputs.
+
+**When should @ToString.Exclude be used?**
+- Sensitive Data: When you have fields like passwords, credit card numbers, or other private information in your entities or data transfer objects (DTOs), and you want to ensure that they are not included in the toString() output.
+- Bidirectional JPA Relationships: In the case of bidirectional relationships (like @OneToMany or @ManyToOne), where the toString() method could cause infinite recursion or a stack overflow if both sides of the relationship are printed.
+- Large Fields: When you have large collections or objects (e.g., a List of items) that are not useful in the toString() output and could make the logs unnecessarily verbose.
+- Performance: To improve performance when generating toString() if certain fields are expensive to compute or unnecessary to include in the string representation.
+
+```java
+@Entity
+@ToString
+public class Parent {
+    @Id
+    private Long id;
+
+    @OneToMany(mappedBy = "parent")
+    @ToString.Exclude // To avoid infinite recursion
+    private List<Child> children;
+}
+
+```
+
+- In this case, using @ToString.Exclude on the children field will prevent an infinite loop in the toString() method when Parent and Child entities are bidirectionally related.
+
+</details>
 
 
+ 
 
 
 
