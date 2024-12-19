@@ -25,6 +25,7 @@ purposes.
 
 ## Java Collections Overview: Implementation Comparison
 
+Note: Under review. 
 
 | **Aspect**                | **ArrayList**  | **LinkedList**  | **Vector**  | **Stack**  | **CopyOnWriteArrayList**  | **HashSet**  | **LinkedHashSet**  | **TreeSet**  | **CopyOnWriteArraySet**  | **EnumSet**  | **HashMap**  | **LinkedHashMap**  | **TreeMap**  | **EnumMap**  | **ConcurrentHashMap**  | **IdentityHashMap**  | **ConcurrentLinkedQueue**  | **ArrayDeque**  | **PriorityQueue**  | **ConcurrentLinkedDeque**  |
 |---------------------------|----------------|-----------------|-------------|------------|--------------------------|--------------|---------------------|--------------|--------------------------|--------------|--------------|---------------------|--------------|-------------|-------------------------|-----------------------|----------------------------|-----------------|--------------------|---------------------------|
