@@ -18,10 +18,11 @@
 <details>
 <summary>Answer</summary>
 
- <summary>Comparison of Spring Boot and Spring Framework</summary>
+ Comparison of Spring Boot and Spring Framework
+
 
 | Feature/Aspect         | Spring Framework                      | Spring Boot                          |
-    |------------------------|---------------------------------------|--------------------------------------|
+|------------------------|---------------------------------------|--------------------------------------|
 | **Configuration**      | Requires extensive XML or Java-based configuration. | Simplifies configuration with auto-configuration and annotations. |
 | **Setup Time**         | More time-consuming setup due to manual configurations. | Quick setup with Spring Initializr and embedded server options. |
 | **Project Structure**  | Flexible structure; can be complex based on project requirements. | Opinionated project structure with a standard convention. |
