@@ -836,12 +836,190 @@ public class ProductController {
 ```
 In this controller, if the id doesn't match 1L, a ResourceNotFoundException is thrown, and it will be handled by the @RestControllerAdvice class we defined earlier.
 
+</details>
+
+## What HTTP status code would you return when a resource is successfully created in a Spring Boot REST API?
+<details>
+<summary>Answer</summary>
+
+- The appropriate HTTP status code for a successful creation of a resource is 201 Created.
+- In Spring Boot, you can use ResponseEntity to return this status along with the created resource. For example:
+
+```java
+@PostMapping("/users")
+public ResponseEntity<User> createUser(@RequestBody User user) {
+  User createdUser = userService.save(user);
+  return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+}
+
+```
+
+or You can use of ResponseStatus do the same. 
+
+```java
+@PostMapping("/users")
+@ResponseStatus(HttpStatus.CREATED)
+public User createUser(@RequestBody User user) {
+    return userService.save(user);
+}
+```
+
+**When to use @ResponseStatus:**
+- It's ideal when you have a straightforward operation where only the HTTP status code needs to be controlled, and you don't need any additional customization like headers or other status codes for the response body.
 
 </details>
 
+## What is the difference between HTTP status codes 404 Not Found and 410 Gone? When would you use each in a RESTful API?
+<details>
+<summary>Answer</summary>
+
+- 404 Not Found: This indicates that the requested resource could not be found, but there is a possibility that it may exist in the future.
+- 410 Gone: This indicates that the requested resource was once available but is no longer available and will not be coming back.
+
+</details>
+
+## How should you name the endpoint to retrieve a list of users in a Spring Boot REST API?
+<details>
+<summary>Answer</summary>
+
+- According to RESTful conventions, the endpoint should be named using a plural noun to represent a collection of resources. The HTTP method GET is used to retrieve resources.
+- The recommended endpoint would be GET /users.
+
+Example:
+
+```java
+@GetMapping("/users")
+public List<User> getAllUsers() {
+    return userService.findAll();
+}
+
+```
+</details>
+
+## What is the correct way to define an endpoint to update a user's information in a Spring Boot REST API?
+<details>
+<summary>Answer</summary>
+
+- For updating a resource, the HTTP method PUT is used, and the endpoint should include the resource identifier (e.g., user ID) in the URL path.
+- The endpoint should be PUT /users/{id} where {id} is the unique identifier of the user being updated.
+
+
+```java
+@PutMapping("/users/{id}")
+public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    User updatedUser = userService.update(id, user);
+    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+}
+
+```
+</details>
+
+## Why should you avoid using verbs in the URL path of a RESTful API, and can you provide an example?
+<details>
+<summary>Answer</summary>
+
+- The HTTP methods (GET, POST, PUT, DELETE) are the verbs that represent actions in RESTful APIs. Including verbs in the URL path is redundant, as the action is already specified by the HTTP method itself.
+- Instead, the URL should describe the resource (the noun), not the action.
+
+**Example of incorrect endpoint:**
+- GET /getUsers
+
+**Correct endpoint:**
+- GET /users
+
+</details>
+
+## How would you handle an endpoint to delete a user in a Spring Boot REST API?
+<details>
+<summary>Answer</summary>
+
+- The HTTP method DELETE should be used for deleting resources. The endpoint should specify the resource to be deleted, typically including its identifier in the URL.
+
+- The correct endpoint would be DELETE /users/{id}, where {id} is the unique identifier for the user to be deleted.
+
+Example:
+```java
+@DeleteMapping("/users/{id}")
+public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    userService.delete(id);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 No Content
+}
+
+```
+
+OR
+
+```java
+@DeleteMapping("/users/{id}")
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public void deleteUser(@PathVariable Long id) {
+    userService.delete(id);
+}
+```
+</details>
+
+
+## What is the difference between PUT and PATCH methods in a RESTful API, and when would you use each?
+<details>
+<summary>Answer</summary>
+
+- PUT is used for updating or replacing an entire resource. It is idempotent, meaning repeated requests will always result in the same outcome.
+- PATCH is used for partially updating a resource. It is also idempotent, but typically only specific fields are updated, not the entire resource.
+
+For example, for updating a user's profile:
+- PUT /users/{id} would replace the entire user information with the provided data.
+- PATCH /users/{id} would only update the specific fields provided (e.g., only the user’s email address).
+
+```java
+@PutMapping("/users/{id}")
+public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    User updatedUser = userService.update(id, user);
+    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+}
+
+@PatchMapping("/users/{id}")
+public ResponseEntity<User> partialUpdateUser(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+    User updatedUser = userService.partialUpdate(id, updates);
+    return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+}
+
+```
+
+</details>
+
+## Common http request status code?
+<details>
+<summary>Answer</summary>
 
 
 
+| **Status Code** | **Description** | **Use Case** |
+|-----------------|-----------------|--------------|
+| **200 OK** | The request was successful and the server has returned the requested data (for `GET`) or the action has been completed (for `POST`, `PUT`, etc.). | Successful `GET` request, resource successfully updated or created. |
+| **201 Created** | The request has been fulfilled, and a new resource has been created. | A new resource has been created, like a new user or item in a database. |
+| **204 No Content** | The request was successful, but there is no content to return in the response body. | `DELETE` or `PUT` requests where no content is returned. |
+| **400 Bad Request** | The server could not understand the request due to invalid syntax or malformed request data. | Invalid input, missing parameters, or incorrect data format in the request body. |
+| **401 Unauthorized** | The request lacks valid authentication credentials or the provided credentials are invalid. | The user is not logged in or their credentials are invalid. |
+| **403 Forbidden** | The server understands the request but refuses to authorize it. The user is authenticated but does not have permission to access the resource. | A logged-in user trying to access a resource they do not have permissions for (e.g., admin-only page). |
+| **404 Not Found** | The server could not find the requested resource. | The client requests a resource (e.g., user profile or article) that doesn't exist. |
+| **405 Method Not Allowed** | The method specified in the request (e.g., `POST`, `GET`, `PUT`) is not allowed for the resource identified by the URL. | Trying to use `GET` on a resource that only supports `POST`, or vice versa. |
+| **408 Request Timeout** | The server timed out waiting for the request. This happens when the client takes too long to send data. | The client fails to send a request within the time frame allowed by the server. |
+| **429 Too Many Requests** | The client has sent too many requests in a given period of time. | The user has exceeded the rate limit set for API requests. |
+| **500 Internal Server Error** | The server encountered an unexpected condition that prevented it from fulfilling the request. | The server crashes or encounters an unexpected exception while processing the request. |
+| **502 Bad Gateway** | The server, while acting as a gateway or proxy, received an invalid response from the upstream server. | A proxy server or gateway (e.g., a load balancer) could not retrieve data from the actual server. |
+| **503 Service Unavailable** | The server is temporarily unable to handle the request due to overloading or maintenance. | The server is temporarily down for maintenance or overloaded with requests. |
+| **504 Gateway Timeout** | The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server it needed to access in order to complete the request. | The server times out waiting for a response from another server or service it relies on. |
+| **505 HTTP Version Not Supported** | The server does not support the HTTP protocol version that was used in the request. | The client uses an outdated or unsupported HTTP version. |
+| **410 Gone** | The resource requested is no longer available and will not be available again. This is a permanent condition. | A resource that used to exist but has been intentionally removed and will not be brought back (e.g., a deprecated API endpoint). |
+| **415 Unsupported Media Type** | The server refuses to process the request because the format of the data in the request body is not supported. | The client sends a `POST` or `PUT` request with an unsupported content type (e.g., sending `text/xml` when the server expects `application/json`). |
+| **418 I'm a teapot** | This is a joke status code defined in RFC 2324. It is returned by an HTTP teapot when asked to brew coffee. | Not used in real-world applications but mentioned humorously in some contexts. |
+| **422 Unprocessable Entity** | The server understands the content type of the request, but the request cannot be processed due to semantic errors (e.g., validation errors). | A form submission where the data is syntactically correct but fails validation (e.g., invalid email format). |
+| **426 Upgrade Required** | The client should switch to a different protocol, such as HTTP/2, to proceed with the request. | The server requires the client to upgrade to a more recent protocol version. |
+| **301 Moved Permanently** | The requested resource has been permanently moved to a new URL. | Typically used for permanent URL redirection (e.g., when an API endpoint is permanently relocated). |
+| **302 Found (Previously "Moved Temporarily")** | The requested resource has been temporarily moved to a different URL. | OAuth 2.0 Authorization Code Flow: A redirect to the authorization server for authentication. |
+| **303 See Other** | The server is redirecting the client to a different resource, usually after a `POST` request. | In OAuth 2.0, used after authorization to redirect the client to the token endpoint with a code. |
+| **307 Temporary Redirect** | The requested resource resides temporarily under a different URL. | Temporary redirects, commonly used for OAuth 2.0 authentication flows, where a user is redirected back to the client after login. |
+| **308 Permanent Redirect** | The requested resource has been permanently moved to a new URL, and future requests should be directed to that URL. | Similar to `301`, but the method and body of the original request are preserved during the redirect. |
 
 
-
+</details>
